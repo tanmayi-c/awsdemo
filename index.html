@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>AWS — Student Builder Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Inter+Tight:wght@400;500&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--fg:#f3eee6;--mut:#a9b0ba;--acc:#8fc4ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-y:auto;scroll-snap-type:y proximity}html:has(body.o),html:has(body.i){overflow:hidden}
+html,body{margin:0;overflow-x:hidden;background:#03040a;color:var(--fg);font:400 15px/1.5 'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased;touch-action:pan-y}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+#nb{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;animation:dr 120s ease-in-out infinite alternate}
+@keyframes dr{to{transform:scale(1.14) translate(-1.5%,1%)}}
+#tint,#vg{position:fixed;inset:0;pointer-events:none}#tint{mix-blend-mode:screen}
+#vg{background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,0,0,.6) 100%)}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}#gl:active{cursor:grabbing}
+header{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:12;display:flex;justify-content:space-between;padding:18px 20px}
+header button{font-weight:500;font-size:14px}#tg{color:#cfd6df}
+#titles{position:fixed;left:0;right:0;bottom:calc(10vh + env(safe-area-inset-bottom,0px));height:1px;z-index:5;perspective:760px;transition:opacity .5s}
+#titles span{position:absolute;left:50%;top:0;white-space:nowrap;font:800 clamp(34px,9.5vw,110px)/1 'Unbounded','Arial Black',sans-serif;text-transform:uppercase;letter-spacing:-.03em;cursor:pointer;-webkit-text-stroke:1px rgba(255,255,255,0)}
+#hint{position:fixed;left:0;right:0;bottom:calc(3.2vh + env(safe-area-inset-bottom,0px));text-align:center;color:var(--mut);z-index:5;transition:opacity .5s;pointer-events:none}
+#pn{position:fixed;z-index:10;left:50%;top:62px;bottom:196px;width:min(560px,92vw);transform:translate(-50%,16px);opacity:0;pointer-events:none;overflow-y:auto;padding:24px;border-radius:20px;background:rgba(6,10,18,.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);touch-action:pan-y;transition:opacity .6s,transform .6s}
+.o #pn{opacity:1;transform:translate(-50%,0);pointer-events:auto;transition-delay:1.25s}
+.o #titles,.o #hint{opacity:0;pointer-events:none}.o #titles span{pointer-events:none}
+#cap{position:fixed;z-index:11;left:0;right:0;bottom:calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:0 70px;opacity:0;pointer-events:none;transition:opacity .5s}
+#cap p{margin:0;max-width:340px;color:#e8ecf2}#cap .mono{color:var(--mut)}
+#cap button{border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:1px}#cap button:hover{color:var(--acc)}
+.o #cap{opacity:1;pointer-events:auto;transition-delay:1.4s}
+#ar button{position:fixed;z-index:11;bottom:calc(30px + env(safe-area-inset-bottom,0px));font-size:26px;color:#cfd6df;opacity:0;pointer-events:none;transition:opacity .5s,color .2s}#ar button:hover{color:#fff}
+#pv{left:max(20px,env(safe-area-inset-left,0px))}#nx{right:78px}
+.o #ar button{opacity:1;pointer-events:auto;transition-delay:1.4s}
+.k{color:var(--acc);margin:0 0 10px}.big{font-size:clamp(24px,5vw,34px);line-height:1.12;letter-spacing:-.03em;font-weight:500;margin:0 0 16px}
+#pc p{margin:0 0 14px;color:#dfe5ee}#pc{transition:opacity .25s}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}.two div{border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:14px}.two b{display:block;font-weight:500;margin-bottom:4px}.two span{color:var(--mut);font-size:14px}
+.aw{list-style:none;margin:0;padding:0;color:var(--mut)}.aw li{display:flex;gap:10px}.aw b{font-weight:400;color:var(--fg);min-width:38px}
+.g{margin:22px 0 8px;color:var(--mut)}
+.r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.13)}
+.r span{font-size:clamp(19px,4.2vw,26px);letter-spacing:-.02em;font-weight:500}.r em{font-style:normal;color:var(--mut);font-size:13px;text-align:right}
+.r small{display:block;color:var(--mut);font-size:14px;font-weight:400;letter-spacing:0}
+.r button{color:var(--acc)}
+form{display:grid;gap:18px;margin-top:8px}
+label{display:grid;gap:4px;color:var(--mut)}
+input,select,textarea{font:inherit;font-size:17px;color:var(--fg);background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.24);padding:8px 0;outline:0;border-radius:0}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}select option{background:#101722}textarea{resize:vertical;min-height:76px}
+.btn{justify-self:start;border:1px solid var(--fg);border-radius:99px;padding:11px 20px}.btn:hover{background:var(--fg);color:#111}
+.msg{display:none;margin:0}.ok{color:var(--acc)}.er{color:#ff7a66}
+#idx{position:fixed;inset:0;z-index:9;background:rgba(3,5,10,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.i #idx{opacity:1;pointer-events:auto}
+#idx ol{list-style:none;margin:0;padding:0;text-align:center}
+#idx li button{font:800 clamp(30px,8vw,64px)/1.15 'Unbounded','Arial Black',sans-serif;text-transform:uppercase;letter-spacing:-.03em;transition:opacity .3s}#idx li sup{font:11px 'JetBrains Mono',monospace;color:var(--mut);margin-right:8px}
+#idx ol:hover button{opacity:.25}#idx ol button:hover{opacity:1}
+#titles,#hint{opacity:var(--pv,0)}
+#ld{position:fixed;inset:0;z-index:50;background:#03040a;overflow:hidden;transition:opacity .9s}
+#ld.h{opacity:0;pointer-events:none}
+#ld small,#ld #lc{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));font:11px 'JetBrains Mono',monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);transition:opacity .4s}
+#ld small{left:20px}#ld #lc{right:20px}
+#ld.fin small,#ld.fin #lc{opacity:0}
+.ol{position:absolute;left:50%;top:46%;width:min(66vw,320px);aspect-ratio:1;transform:translate(-50%,-50%);transition:opacity .5s}
+.ol circle{fill:none;stroke:#f3eee6;stroke-width:.5;stroke-dasharray:1;stroke-dashoffset:1;animation:dw 2.4s .2s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes dw{to{stroke-dashoffset:0}}
+.w{position:absolute;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(3,4,10,.92);overflow:hidden;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1),filter .5s}
+.w.on{opacity:1;transform:none}
+.w>i{display:block;height:15px;line-height:14px;padding:0 6px;border-bottom:1px solid rgba(255,255,255,.3);font:normal 9px 'JetBrains Mono',monospace;color:var(--mut);letter-spacing:.04em}
+.w>i::before{content:'\25CF \25CF \25CF';margin-right:8px;letter-spacing:2px;font-size:6px;color:#a9b0ba;vertical-align:1px}
+.w>div{position:absolute;left:0;right:0;top:15px;bottom:0;display:flex;align-items:center;justify-content:center}
+.w svg{width:80%;height:80%}.w svg *{fill:none;stroke:#f3eee6;stroke-width:.35}
+.sp{width:78%;aspect-ratio:1;border-radius:50%}
+#w1{left:6%;top:22%;width:50%;height:30%}
+#w2{left:46%;top:14%;width:42%;height:28%}
+#w3{left:40%;top:44%;width:44%;height:26%}
+#w4{left:8%;top:46%;width:36%;height:22%}
+#w5{left:20%;top:30%;width:60%;height:36%}
+#w2 .sp{background:radial-gradient(circle at 38% 32%,#c9b8ff,#6f93ff 45%,#8a45c9 85%)}
+#w3 .sp{background:radial-gradient(circle at 36% 30%,#d8d8d8,#6e6e6e 60%,#1d1d1d)}
+#w4>div{background-size:cover;background-position:center}
+#w5 .sp{background-size:200% 100%;animation:sl 4s linear infinite;box-shadow:inset -14px -10px 30px rgba(0,0,0,.65)}
+@keyframes sl{to{background-position:200% 0}}
+#fk{position:absolute;left:50%;top:46%;width:min(80vw,380px);aspect-ratio:1;transform:translate(-50%,-50%) scale(1.35);opacity:0;transition:opacity .15s,transform .35s cubic-bezier(.2,.8,.2,1)}
+#fk.on{opacity:1;transform:translate(-50%,-50%)}
+#fk b{position:absolute;width:18px;height:18px;border:0 solid #ffc27a}
+#fk b:nth-child(1){left:0;top:0;border-width:2px 0 0 2px}#fk b:nth-child(2){right:0;top:0;border-width:2px 2px 0 0}
+#fk b:nth-child(3){left:0;bottom:0;border-width:0 0 2px 2px}#fk b:nth-child(4){right:0;bottom:0;border-width:0 2px 2px 0}
+#ld.fin .w,#ld.fin #fk,#ld.fin .ol{opacity:0;transition:opacity .45s}
+
+#sp{height:900vh;position:relative;pointer-events:none}.sn{position:absolute;left:0;height:1px;width:1px;scroll-snap-align:start}
+#hero{position:fixed;inset:0;z-index:4;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 12px}
+#hero h1{margin:0;font:800 clamp(64px,24vw,230px)/.92 'Unbounded','Arial Black',sans-serif;text-transform:uppercase;letter-spacing:-.04em}
+#hero h1 em{display:block;font-style:normal;font-size:.2em;letter-spacing:.02em;margin-top:.45em;color:var(--acc)}
+#hero .mono{position:absolute;color:var(--mut)}
+#fl{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 46%,#fff 0,#e0b8ff 16%,#7b3fe0 44%,rgba(60,20,120,.4) 72%,transparent 100%)}
+main{position:relative;z-index:6;background:#03040a;scroll-snap-align:start}
+main section{padding:13vh 22px;max-width:1100px;margin:auto}
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s,transform .8s}.rv.in{opacity:1;transform:none}
+main h2{font:800 clamp(28px,7vw,72px)/1 'Unbounded','Arial Black',sans-serif;text-transform:uppercase;letter-spacing:-.03em;margin:8px 0 22px}main h2 em{color:var(--acc);font-style:normal}
+main p{max-width:560px;color:#dfe5ee}
+.cn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px}.cn div,.od div{border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:18px}.cn b{display:block;font:800 clamp(28px,8vw,44px) 'Unbounded','Arial Black',sans-serif}
+.mq{overflow:hidden;white-space:nowrap;border-block:1px solid rgba(255,255,255,.14);padding:16px 0;background:#03040a}.mq span{display:inline-block;animation:mq 24s linear infinite;font:800 clamp(26px,6vw,48px) 'Unbounded','Arial Black',sans-serif;color:transparent;-webkit-text-stroke:1px #7d8794}@keyframes mq{to{transform:translateX(-50%)}}
+#gal{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;touch-action:pan-x pan-y}#gal figure{flex:0 0 min(420px,74%);margin:0;aspect-ratio:3/4;border-radius:16px;position:relative;overflow:hidden;scroll-snap-align:center;background:linear-gradient(160deg,#18284a,#3a1d5c)}#gal img{width:100%;height:100%;object-fit:cover;display:block}#gal figcaption{position:absolute;left:14px;bottom:12px;text-shadow:0 1px 8px #000}
+.od{display:grid;gap:12px;margin-top:26px}.od span{color:var(--acc)}.od h3{margin:6px 0;font:800 18px 'Unbounded','Arial Black',sans-serif;text-transform:uppercase}.od p{margin:0;color:var(--mut)}
+@media(min-width:700px){.od{grid-template-columns:repeat(3,1fr)}.cn{grid-template-columns:repeat(4,1fr)}}
+footer{padding:40px 22px 90px;text-align:center;color:var(--mut);border-top:1px solid rgba(255,255,255,.12)}
+#jv{position:fixed;right:max(10px,env(safe-area-inset-right,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30}
+#bot{display:block;width:52px;height:60px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+@keyframes bob{50%{transform:translateY(-5px)}}
+#ant{animation:bk 1.6s infinite}@keyframes bk{50%{opacity:.2}}
+#eyes{transform-origin:31px 28px;animation:bl 4.5s infinite}@keyframes bl{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+#tip{position:absolute;right:58px;bottom:28px;background:#f3eee6;color:#111;padding:5px 10px;border-radius:10px 10px 2px 10px;font-size:12px;white-space:nowrap}
+#jw{display:none;position:absolute;right:0;bottom:70px;width:min(320px,calc(100vw - 20px));height:380px;background:#0f141c;border:1px solid rgba(255,255,255,.16);border-radius:16px;flex-direction:column;overflow:hidden;box-shadow:0 14px 50px rgba(0,0,0,.6);touch-action:pan-y}
+#jw.open{display:flex}
+#jh{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;color:var(--mut)}#jh i{color:var(--acc);font-style:normal}#jx{cursor:pointer}
+#jm{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:86%;padding:8px 12px;border-radius:12px;font-size:14px}.m.b{border:1px solid rgba(255,255,255,.16);align-self:flex-start}.m.u{background:var(--acc);color:#0a1018;align-self:flex-end}
+#jc{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px}#jc button{font-size:12px;border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:4px 10px}#jc button:hover{border-color:var(--acc)}
+#jf{display:flex;border-top:1px solid rgba(255,255,255,.12)}#jf input{flex:1;border:0;padding:12px 14px;font-size:15px}#jf button{color:var(--acc);padding:0 16px}
+@media (max-width:600px){.two{grid-template-columns:1fr}#tip{display:none}}
+</style>
+</head>
+<body>
+<canvas id="nb"></canvas><div id="tint"></div><div id="vg"></div>
+<canvas id="gl"></canvas>
+<header><button id="brand">AWS</button><button id="tg">Index</button></header>
+<div id="titles"></div>
+<div id="hint" class="mono"></div>
+<div id="pn"><div id="pc"></div></div>
+<div id="cap"></div>
+<div id="ar"><button id="pv" aria-label="Previous">←</button><button id="nx" aria-label="Next">→</button></div>
+<div id="idx"><ol id="il"></ol></div>
+<div id="ld">
+  <svg class="ol" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="49" pathLength="1" transform="rotate(90 50 50)"/></svg>
+  <div class="w" id="w1"><i>wireframe</i><div><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/><ellipse cx="50" cy="50" rx="46" ry="14"/><ellipse cx="50" cy="50" rx="46" ry="30"/><ellipse cx="50" cy="50" rx="14" ry="46"/><ellipse cx="50" cy="50" rx="30" ry="46"/><line x1="4" y1="50" x2="96" y2="50"/><line x1="50" y1="4" x2="50" y2="96"/></svg></div></div>
+  <div class="w" id="w2"><i>normals</i><div><span class="sp"></span></div></div>
+  <div class="w" id="w3"><i>clay</i><div><span class="sp"></span></div></div>
+  <div class="w" id="w4"><i>texture</i><div></div></div>
+  <div class="w" id="w5"><i>beauty</i><div><span class="sp"></span></div></div>
+  <div id="fk"><b></b><b></b><b></b><b></b></div>
+  <small>AWS — Student builders</small><span id="lc">0</span>
+</div>
+
+<div id="jv">
+  <div id="jw">
+    <div id="jh"><span><i>●</i> Jarvis</span><span class="mono" id="jx">Close</span></div>
+    <div id="jm"></div><div id="jc"></div>
+    <form id="jf"><input id="ji" placeholder="Ask Jarvis anything…" autocomplete="off"><button>Send</button></form>
+  </div>
+  <span id="tip">Ask me!</span>
+  <button id="bot" aria-label="Open Jarvis, the AWS helper bot">
+    <svg viewBox="0 0 62 72" width="52" height="60" aria-hidden="true">
+      <line x1="31" y1="9" x2="31" y2="2" stroke="#ece7de" stroke-width="2"/><circle id="ant" cx="31" cy="4" r="3" fill="#8fc4ff"/>
+      <rect x="9" y="10" width="44" height="36" rx="12" fill="#ece7de"/><rect x="14" y="16" width="34" height="24" rx="8" fill="#10151d"/>
+      <g id="eyes"><circle cx="24" cy="28" r="5" fill="#8fc4ff" opacity=".25"/><circle cx="38" cy="28" r="5" fill="#8fc4ff" opacity=".25"/><circle id="pl" cx="24" cy="28" r="3" fill="#a9d4ff"/><circle id="pr" cx="38" cy="28" r="3" fill="#a9d4ff"/></g>
+      <rect x="16" y="49" width="30" height="19" rx="7" fill="#cfc8bb"/><circle cx="31" cy="58" r="3" fill="#8fc4ff"/>
+      <rect x="4" y="51" width="8" height="12" rx="4" fill="#ece7de"/><rect x="50" y="51" width="8" height="12" rx="4" fill="#ece7de"/>
+    </svg>
+  </button>
+</div>
+
+<div id="fl"></div>
+<div id="hero"><span class="mono" style="top:76px;left:20px">AWS × MVJCE</span><span class="mono" style="top:76px;right:20px;text-align:right">Students. Cloud. Real impact.</span><h1>AWS<em>Student Builder Group</em></h1><span class="mono" style="bottom:calc(5vh + env(safe-area-inset-bottom,0px))">Scroll ↓</span></div>
+<div id="sp"><i class="sn" style="top:150vh"></i><i class="sn" style="top:310vh"></i><i class="sn" style="top:470vh"></i><i class="sn" style="top:630vh"></i><i class="sn" style="top:790vh"></i></div>
+<main>
+<section class="rv"><p class="k mono">Who we are</p><h2>Built by students. <em>Powered by cloud.</em></h2><p>We are the AWS club of MVJCE. We turn cloud computing from theory into things you can actually build, deploy and show off.</p><p>Whether you are a complete beginner or already know your way around a terminal, there is a place for you here.</p>
+<div class="cn"><div><b data-n="120">0</b><span class="mono">Members</span></div><div><b data-n="15">0</b><span class="mono">Workshops</span></div><div><b data-n="20">0</b><span class="mono">Projects</span></div><div><b data-n="10">0</b><span class="mono">Events</span></div></div></section>
+<div class="mq"><span>EC2 · S3 · LAMBDA · IAM · DYNAMODB · CLOUDFRONT · VPC · RDS · EC2 · S3 · LAMBDA · IAM · DYNAMODB · CLOUDFRONT · VPC · RDS · </span></div>
+<section class="rv"><p class="k mono">Our campus</p><h2>Life at <em>MVJCE</em></h2><div id="gal"><figure><img loading="lazy" alt="Campus" src="https://chaithanya-ayis.github.io/aws-website/images/campus1.jpg" onerror="this.remove()"><figcaption class="mono">CAMPUS</figcaption></figure><figure><img loading="lazy" alt="Labs" src="https://chaithanya-ayis.github.io/aws-website/images/campus2.jpg" onerror="this.remove()"><figcaption class="mono">LABS</figcaption></figure><figure><img loading="lazy" alt="Events" src="https://chaithanya-ayis.github.io/aws-website/images/campus3.jpg" onerror="this.remove()"><figcaption class="mono">EVENTS</figcaption></figure><figure><img loading="lazy" alt="Clubs" src="https://chaithanya-ayis.github.io/aws-website/images/campus4.jpg" onerror="this.remove()"><figcaption class="mono">CLUBS</figcaption></figure><figure><img loading="lazy" alt="Students" src="https://chaithanya-ayis.github.io/aws-website/images/campus5.jpg" onerror="this.remove()"><figcaption class="mono">STUDENTS</figcaption></figure></div></section>
+<section class="rv"><p class="k mono">What we do</p><h2>Enter the <em>orbit</em></h2><div class="od"><div><span class="mono">01</span><h3>Cloud workshops</h3><p>Hands-on sessions on EC2, S3, Lambda and more. Learn by doing.</p></div><div><span class="mono">02</span><h3>Hackathons</h3><p>Build something real against the clock, in a team.</p></div><div><span class="mono">03</span><h3>Certifications</h3><p>Study groups and guidance for AWS certification exams.</p></div><div><span class="mono">04</span><h3>Projects</h3><p>Deploy websites, apps and APIs that live on the cloud.</p></div><div><span class="mono">05</span><h3>Talks</h3><p>Sessions with seniors, alumni and industry engineers.</p></div><div><span class="mono">06</span><h3>Community</h3><p>A place to ask questions, share wins and grow together.</p></div></div></section>
+<section class="rv" style="text-align:center"><p class="k mono">Your move</p><h2>Join the <em>cloud</em></h2><p style="margin:0 auto 24px">Ready to build with us? Say hello and become part of AWS × MVJCE.</p><button class="btn" id="apply" style="justify-self:center">Apply now ↗</button></section>
+<footer class="mono">AWS × MVJCE · Students. Cloud. Real impact.</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+var RPT=0;function rpt(x){if(RPT++>2)return;var d=document.createElement('div');d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:999;background:#400;color:#fff;font:11px/1.4 monospace;padding:10px;border-radius:8px;white-space:pre-wrap;word-break:break-all';d.textContent='ERROR: '+String(x&&x.stack||x).slice(0,420);document.body.appendChild(d);setTimeout(function(){d.remove()},20000)}
+addEventListener('error',function(ev){rpt(ev.message+' @ line '+ev.lineno+':'+ev.colno)});addEventListener('unhandledrejection',function(ev){rpt(ev.reason)});
+
+(function(){
+var S=['home','join','community','events','contact'],N=['Home','Join','Community','Events','Contact'];
+var NAMES=['Earth','A black hole','55 Cancri e (Janssen)','Saturn','Neptune'];
+var TINT=[[60,120,255],[190,100,255],[255,90,30],[255,200,110],[70,130,255]];
+var P=[
+'<p class="k mono">01 — Home</p><p class="big">AWS, a student builder club.</p><p>We’re for people who want to create webpages, websites, apps and software, and share their creative side of tech with everyone. If you like tech, you’re in the right place.</p><div class="two"><div><b>Tech team</b><span>The logic behind everything we build.</span></div><div><b>PR team</b><span>The aesthetic: posters and design for every site.</span></div></div><ul class="aw"><li><b>2×</b>Teams</li><li><b>3×</b>Flagship events</li><li><b>∞×</b>Things to build</li></ul>',
+'<p class="k mono">02 — Join</p><p class="big">Join us.</p><p>Tell us who you are and what you’ve made. Beginners welcome, curiosity required.</p><form id="jf2" novalidate><label><span class="mono">Name</span><input name="name" autocomplete="name"></label><label><span class="mono">Semester</span><select name="sem"><option value="">Select…</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label><label><span class="mono">Email ID</span><input type="email" name="email" autocomplete="email"></label><label><span class="mono">Link to something you built</span><input type="url" name="link" placeholder="https://"></label><label><span class="mono">Why do you want to join?</span><textarea name="why"></textarea></label><button class="btn" type="submit">Submit application ↗</button><p class="msg ok" id="ok"></p><p class="msg er" id="er"></p></form>',
+'<p class="k mono">03 — Community</p><p class="big">The people who keep AWS running.</p><p class="g mono">Tech team</p><div class="r"><span>Mohammad Saif</span><em>President</em></div><div class="r"><span>C Varun</span><em>Vice President</em></div><div class="r"><span>Srikar</span><em>Tech Lead</em></div><p class="g mono">PR team</p><div class="r"><span>Shashank NM</span><em>PR Lead</em></div>',
+'<p class="k mono">04 — Events</p><p class="big">Come learn, build and show off.</p><div class="r"><span>Intro Workshop<small>Tools, setup and a small first project.</small></span><em>Start here</em></div><div class="r"><span>Project Showcase<small>Members demo what they built and get feedback.</small></span><em>Demo day</em></div><div class="r"><span>VertechX<small>Our big build event for tech and design.</small></span><em>Flagship</em></div><div class="r"><span>And more…<small>More events are on the way.</small></span><em>Soon</em></div>',
+'<p class="k mono">05 — Contact</p><p class="big">Questions, ideas or collabs?</p><p>Reach the team, or ask Jarvis in the corner.</p><div class="r"><span>Join the club</span><em><button data-go="1">Apply ↗</button></em></div><div class="r"><span>Tech team</span><em>Saif · Varun · Srikar</em></div><div class="r"><span>PR team</span><em>Shashank NM</em></div>'];
+var CAP=[['A student club for people who build webpages, websites, apps and software.','Join the club',1],['Tell us what you’ve built and why you want in.','Meet the community',2],['The Tech team and PR team behind AWS.','See events',3],['Workshops, showcases and VertechX.','Get in touch',4],['Questions, ideas or collabs? Ask the team or Jarvis.','Back to home',0]];
+function mx(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
+function m(n){return((Math.round(n)%5)+5)%5}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function R_(a,b){return a+Math.random()*(b-a)}
+
+// ---------- Galaxy background (painted once) ----------
+(function(){var c=document.getElementById('nb'),W=1000;c.width=W;c.height=W;var x=c.getContext('2d');x.fillStyle='#03040a';x.fillRect(0,0,W,W);
+ var cols=[[120,70,220],[60,110,255],[230,90,170],[255,170,90],[90,200,255]];
+ function blob(px,py,r,col,a){var g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,'rgba('+col+','+a+')');g.addColorStop(1,'rgba('+col+',0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2)}
+ function onBand(){var t=Math.random(),off=(Math.random()+Math.random()+Math.random()-1.5)*240;return[-80+1160*t+off*.6,880-780*t+off*.8,off,t]}
+ for(var i=0;i<340;i++){var b=onBand(),col=cols[(Math.random()*5)|0];blob(b[0],b[1],60+Math.random()*190,col.join(','),(.03+Math.random()*.05)*(1-Math.abs(b[2])/420))}
+ blob(500,500,300,'255,210,150',.2);blob(500,500,120,'255,245,225',.22);
+ for(i=0;i<110;i++){b=onBand();blob(b[0]*.9+50,b[1]*.9+50,25+Math.random()*100,'2,3,8',.2)}
+ for(i=0;i<6000;i++){b=onBand();x.fillStyle='rgba(255,'+(225+Math.random()*30|0)+',235,'+(.15+Math.random()*.55)+')';x.fillRect(b[0],b[1],.7+Math.random()*.8,.7+Math.random()*.8)}
+ for(i=0;i<650;i++){x.fillStyle='rgba(255,255,255,'+(.2+Math.random()*.7)+')';x.fillRect(Math.random()*W,Math.random()*W,.8+Math.random()*1.1,.8+Math.random()*1.1)}
+ for(i=0;i<22;i++){blob(Math.random()*W,Math.random()*W,8+Math.random()*10,'200,225,255',.55)}})();
+
+// ---------- Procedural textures ----------
+function hash(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n)}
+function vn(x,y,px){var xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),x0=((xi%px)+px)%px,x1=(((xi+1)%px)+px)%px,a=hash(x0,yi),b=hash(x1,yi),c=hash(x0,yi+1),d=hash(x1,yi+1);return(a*(1-u)+b*u)*(1-v)+(c*(1-u)+d*u)*v}
+function fbm(x,y,px){var s=0,a=.5,f=1;for(var o=0;o<4;o++){s+=a*vn(x*f,y*f,px*f);a*=.5;f*=2}return s}
+var TW=512,TH=256;
+function mk(fn){var c=document.createElement('canvas');c.width=TW;c.height=TH;var x=c.getContext('2d'),im=x.createImageData(TW,TH);
+ for(var j=0;j<TH;j++)for(var i=0;i<TW;i++){var o=fn(i/TW,j/TH),k=(j*TW+i)*4;im.data[k]=o[0];im.data[k+1]=o[1];im.data[k+2]=o[2];im.data[k+3]=255}
+ x.putImageData(im,0,0);var t=new THREE.CanvasTexture(c);t.wrapS=THREE.RepeatWrapping;return t}
+var WH=[255,255,255];
+var texEarth=mk(function(fx,fy){var lat=Math.abs(fy-.5)*2,n=fbm(fx*5,fy*2.5,5),c;
+ if(n>.5){var h=clamp((n-.5)/.22,0,1),dz=fbm(fx*7+2,fy*3.5,7);c=h<.35?mx([38,112,48],[96,118,56],h/.35):mx([96,118,56],[142,118,84],(h-.35)/.65);
+  if(dz>.55&&lat<.65)c=mx(c,[204,172,104],clamp((dz-.55)/.15,0,1)*.9);if(h>.85)c=mx(c,[245,245,245],(h-.85)/.15)}
+ else{c=mx([30,120,200],[5,28,96],clamp((.5-n)/.18,0,1))}
+ if(lat>.86)c=mx(c,[245,248,255],clamp((lat-.86)/.07,0,1));
+ return mx(c,WH,clamp((fbm(fx*8+3,fy*4,8)-.5)/.18,0,1)*.88)});
+var texLava=mk(function(fx,fy){var n=fbm(fx*6,fy*3,6),n2=fbm(fx*11+5,fy*5.5,11),g=Math.max(clamp(1-Math.abs(n-.5)/.035,0,1),clamp(1-Math.abs(n2-.5)/.025,0,1)*.8),c=mx([16,9,9],[56,30,22],fbm(fx*14,fy*7,14));
+ c=mx(c,[255,130,28],g);return g>.6?mx(c,[255,235,130],(g-.6)/.4):c});
+var texSat=mk(function(fx,fy){var lat=Math.abs(fy-.5)*2,n=fbm(fx*3,fy*10,3),b=Math.sin(fy*Math.PI*22+n*2.2)*.5+.5,c=b<.5?mx([196,160,108],[226,200,150],b*2):mx([226,200,150],[245,230,190],(b-.5)*2),k=1-Math.pow(lat,3)*.35;return[c[0]*k,c[1]*k,c[2]*k]});
+var texNep=mk(function(fx,fy){var n=fbm(fx*6,fy*14,6),t=(Math.sin(fy*Math.PI*9+n*3.4)+1)/2,c=t<.6?mx([6,24,112],[34,98,214],t/.6):mx([34,98,214],[150,208,255],(t-.6)/.4),w=clamp((fbm(fx*10,fy*28,10)-.52)/.22,0,1);w=w*w*(3-2*w)*.9;c=mx(c,WH,w);
+ var dx=(fx-.3)/.09,dy=(fy-.58)/.07;c=mx(c,[4,14,80],Math.exp(-(dx*dx+dy*dy))*.7);var pole=Math.pow(Math.abs(fy-.5)*2,3)*.45;return[c[0]*(1-pole),c[1]*(1-pole),c[2]*(1-pole*.6)]});
+function cvs(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c}
+
+// ---------- Scene ----------
+var cv=document.getElementById('gl'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio||1,2));R.setClearColor(0,0);
+var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(35,1,.1,80);
+sc.add(new THREE.AmbientLight(0xffffff,.45));var dl=new THREE.DirectionalLight(0xfff2e0,1.25);dl.position.set(4,3,6);sc.add(dl);var pl2=new THREE.PointLight(0x88aaff,.6,40);pl2.position.set(-4,1,-4);sc.add(pl2);
+// stars
+var NS=1600,sp=new Float32Array(NS*3),scl=new Float32Array(NS*3);
+for(var i=0;i<NS;i++){var th=Math.random()*6.283,ph=Math.acos(2*Math.random()-1),rr=30+Math.random()*20;sp[i*3]=rr*Math.sin(ph)*Math.cos(th);sp[i*3+1]=rr*Math.cos(ph);sp[i*3+2]=rr*Math.sin(ph)*Math.sin(th);var q=Math.random(),cc=q<.6?[1,1,1]:q<.85?[.7,.8,1]:[1,.8,.6];scl[i*3]=cc[0];scl[i*3+1]=cc[1];scl[i*3+2]=cc[2]}
+var sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));sg.setAttribute('color',new THREE.BufferAttribute(scl,3));
+var stars=new THREE.Points(sg,new THREE.PointsMaterial({size:.2,vertexColors:true,transparent:true,opacity:.9,depthWrite:false}));sc.add(stars);
+// helpers
+function atmo(r,c,k){return new THREE.Mesh(new THREE.SphereGeometry(r,48,32),new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,blending:THREE.AdditiveBlending,depthWrite:false,
+ vertexShader:'varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+ fragmentShader:'varying vec3 vN;void main(){float i=pow(max(0.0,0.62-dot(vN,vec3(0.0,0.0,1.0))),3.0);gl_FragColor=vec4('+c[0].toFixed(2)+','+c[1].toFixed(2)+','+c[2].toFixed(2)+',1.0)*i*'+k.toFixed(2)+';}'}))}
+function sphereBody(tex,rad,em,ac,ak,K){var g=new THREE.Group(),mat=new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:0xffffff,emissiveIntensity:em,roughness:.7}),mesh=new THREE.Mesh(new THREE.SphereGeometry(rad,64,48),mat);g.add(mesh);g.add(atmo(rad*1.22,ac,ak));return{g:g,mesh:mesh,tex:tex,K:K}}
+var earth=sphereBody(texEarth,1.25,.12,[.3,.6,1],2.4,1);
+var lava=sphereBody(texLava,1.1,1,[1,.4,.08],3,.9);
+var nep=sphereBody(texNep,1.25,.35,[.35,.62,1],2.2,1);
+// Saturn
+var sat=(function(){var g=new THREE.Group(),w=new THREE.Group();w.rotation.set(.45,0,.4);g.add(w);
+ var mesh=new THREE.Mesh(new THREE.SphereGeometry(.85,64,48),new THREE.MeshStandardMaterial({map:texSat,emissiveMap:texSat,emissive:0xffffff,emissiveIntensity:.3,roughness:.75}));w.add(mesh);
+ var rg=new THREE.RingGeometry(1.15,1.95,128,1),p=rg.attributes.position,uv=rg.attributes.uv;for(var i=0;i<p.count;i++)uv.setXY(i,(Math.hypot(p.getX(i),p.getY(i))-1.15)/.8,.5);
+ var rc=cvs(256,2),rx=rc.getContext('2d');for(var x=0;x<256;x++){var u=x/256,a=0;if(u<.08)a=u/.08*.35;else if(u<.45)a=.8-.1*Math.sin(u*90);else if(u<.5)a=.25;else if(u<.56)a=.04;else if(u<.93)a=.7+.2*Math.sin(u*130);else a=(1-u)/.07*.5;rx.fillStyle='rgba(228,208,170,'+a+')';rx.fillRect(x,0,1,2)}
+ var ring=new THREE.Mesh(rg,new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(rc),transparent:true,side:THREE.DoubleSide,depthWrite:false}));ring.rotation.x=Math.PI/2;w.add(ring);
+ g.add(atmo(.85*1.2,[.9,.8,.5],1.2));return{g:g,mesh:mesh,tex:texSat,K:.68}})();
+// Black hole
+var hole=(function(){var g=new THREE.Group(),hz=new THREE.Mesh(new THREE.SphereGeometry(.75,48,32),new THREE.MeshBasicMaterial({color:0x000000}));g.add(hz);
+ var dc=cvs(512,512),d=dc.getContext('2d');d.translate(256,256);
+ for(var r=97;r<256;r+=1){var t=(r-97)/159,col=t<.15?'255,240,200':t<.45?'255,160,50':'170,40,14',a=Math.pow(1-t,1.4)*(.45+Math.random()*.55);d.strokeStyle='rgba('+col+','+a+')';d.lineWidth=1.4;d.beginPath();d.arc(0,0,r,0,6.283);d.stroke()}
+ for(var i=0;i<260;i++){var rr=100+Math.random()*120,an=Math.random()*6.283,t2=(rr-97)/159;d.fillStyle='rgba(255,'+(190-t2*110|0)+',90,'+(.25+Math.random()*.4)*(1-t2)+')';d.beginPath();d.arc(Math.cos(an)*rr,Math.sin(an)*rr,1+Math.random()*3,0,6.283);d.fill()}
+ var dw=new THREE.Group();dw.rotation.set(-1.2,0,.12);var disk=new THREE.Mesh(new THREE.RingGeometry(.95,2.5,128),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(dc),transparent:true,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));dw.add(disk);g.add(dw);
+ var pc=cvs(256,256),px=pc.getContext('2d'),gr=px.createRadialGradient(128,128,48,128,128,128);gr.addColorStop(0,'rgba(255,230,190,0)');gr.addColorStop(.12,'rgba(255,235,200,.95)');gr.addColorStop(.2,'rgba(255,170,90,.4)');gr.addColorStop(1,'rgba(255,120,40,0)');px.fillStyle=gr;px.fillRect(0,0,256,256);
+ var spr=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));spr.scale.set(3.8,3.8,1);g.add(spr);
+ return{g:g,mesh:null,disk:disk,tex:null,K:.6}})();
+var bodies=[earth,hole,lava,sat,nep];bodies.forEach(function(b){sc.add(b.g)});
+var WP=[[0,0,0],[7,1.3,-9.5],[-3,-.9,-19.5],[-9.5,1.5,-29],[-2,0,-40]].map(function(a){return new THREE.Vector3(a[0],a[1],a[2])}),
+ curve=new THREE.CatmullRomCurve3(WP),pathG=new THREE.Group(),pathM=new THREE.LineBasicMaterial({color:0x9fb8ff,transparent:true,opacity:0,depthWrite:false}),
+ pathL=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(320)),pathM);pathL.frustumCulled=false;pathG.add(pathL);
+var NPL=16,plp=new Float32Array(NPL*3),plg=new THREE.BufferGeometry();plg.setAttribute('position',new THREE.BufferAttribute(plp,3));
+var plM=new THREE.PointsMaterial({size:.3,color:0xcfe2ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}),plP=new THREE.Points(plg,plM);plP.frustumCulled=false;pathG.add(plP);sc.add(pathG);
+function mkRing(r){var pts=[];for(var a=0;a<=64;a++){var t=a/64*6.2832;pts.push(new THREE.Vector3(Math.cos(t)*r,0,Math.sin(t)*r))}var l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xaecbff,transparent:true,opacity:.3,depthWrite:false}));l.rotation.x=.35;return l}
+bodies.forEach(function(b){b.g.add(mkRing(b===hole?3:2.6))});
+// crack overlay + shards
+var CW=1024,CH=512,cc=cvs(CW,CH),cx=cc.getContext('2d'),ctex=new THREE.CanvasTexture(cc),paths=[];
+for(var q=0;q<9;q++){var u=.15+Math.random()*.7,v=.25+Math.random()*.5,a=Math.random()*6.283,pts=[[u,v]];
+ for(var s=0;s<16;s++){a+=(Math.random()-.5)*1.2;u+=Math.cos(a)*.022;v+=Math.sin(a)*.034;pts.push([u,v]);
+  if((s===5||s===10)&&Math.random()>.35){var u2=u,v2=v,a2=a+(Math.random()>.5?1:-1)*(.6+Math.random()*.6),p2=[[u2,v2]];for(var z=0;z<8;z++){a2+=(Math.random()-.5)*1.1;u2+=Math.cos(a2)*.02;v2+=Math.sin(a2)*.03;p2.push([u2,v2])}paths.push({p:p2,d:.3+s*.03})}}
+ paths.push({p:pts,d:Math.random()*.2})}
+function drawCracks(pr){cx.clearRect(0,0,CW,CH);cx.strokeStyle='#fff';cx.lineWidth=4;cx.lineCap='round';cx.shadowBlur=12;cx.shadowColor='rgba(170,215,255,1)';
+ paths.forEach(function(o){var n=o.p.length-1,k=clamp((pr-o.d)/(1-o.d),0,1)*n;if(k<=0)return;cx.beginPath();cx.moveTo(o.p[0][0]*CW,o.p[0][1]*CH);
+  for(var i=1;i<=Math.floor(k);i++)cx.lineTo(o.p[i][0]*CW,o.p[i][1]*CH);var f=k-Math.floor(k);
+  if(f>0&&Math.floor(k)<n){var A=o.p[Math.floor(k)],B=o.p[Math.floor(k)+1];cx.lineTo((A[0]+(B[0]-A[0])*f)*CW,(A[1]+(B[1]-A[1])*f)*CH)}cx.stroke()});ctex.needsUpdate=true}
+var RAD=1.25,CY=RAD-.35;
+var crack=new THREE.Mesh(new THREE.SphereGeometry(RAD*1.006,64,48),new THREE.MeshBasicMaterial({map:ctex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));sc.add(crack);
+var shardMat=new THREE.MeshStandardMaterial({map:texEarth,emissiveMap:texEarth,emissive:0xffffff,emissiveIntensity:.3,roughness:.7}),shG=new THREE.Group(),shards=[];sc.add(shG);
+function setShard(i){var t=bodies[i].tex;shardMat.map=t;shardMat.emissiveMap=t;shardMat.color.setHex(t?0xffffff:0x2a2230);shardMat.emissive.setHex(t?0xffffff:0x000000);shardMat.needsUpdate=true}
+for(var k=0;k<16;k++){var ang=Math.random()*6.283,g2=new THREE.IcosahedronGeometry(1,0);g2.scale(1,.6+Math.random()*1.2,.7+Math.random()*.6);var mesh=new THREE.Mesh(g2,shardMat);shG.add(mesh);
+ shards.push({m:mesh,home:new THREE.Vector3(Math.cos(ang)*.7,CY+(Math.random()-.5)*1.8,Math.sin(ang)*.7),dir:new THREE.Vector3(Math.cos(ang)*(1.3+Math.random()*2.4),(Math.random()-.35)*2.4,Math.sin(ang)*1.6),size:.12+Math.random()*.34,r:[Math.random()*2-1,Math.random()*2-1],ph:Math.random()*6})}
+var NO=5200,op=new Float32Array(NO*3),oc=new Float32Array(NO*3);
+for(var oi=0;oi<NO;oi++){var oth=Math.random()*6.283,oph=Math.acos(2*Math.random()-1),orr=2.3*(.78+Math.pow(Math.random(),3)*.5),oq=Math.random(),oco=oq<.55?[.62,.42,1]:oq<.85?[1,.62,.2]:[1,1,1];op[oi*3]=orr*Math.sin(oph)*Math.cos(oth);op[oi*3+1]=orr*Math.cos(oph);op[oi*3+2]=orr*Math.sin(oph)*Math.sin(oth);oc[oi*3]=oco[0];oc[oi*3+1]=oco[1];oc[oi*3+2]=oco[2]}
+var og=new THREE.BufferGeometry();og.setAttribute('position',new THREE.BufferAttribute(op,3));og.setAttribute('color',new THREE.BufferAttribute(oc,3));
+var orbM=new THREE.PointsMaterial({size:.055,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}),orb=new THREE.Points(og,orbM);orb.position.y=CY;sc.add(orb);
+var base=1;
+function size(){var w=innerWidth,hh=innerHeight;R.setSize(w,hh,false);cam.aspect=w/hh;cam.position.set(0,0,11.5);cam.updateProjectionMatrix();base=clamp(cam.aspect*1.6,.65,1.15)}
+addEventListener('resize',size);size();
+
+// ---------- Titles / index ----------
+var T=document.getElementById('titles'),tEls=N.map(function(n,i){var s=document.createElement('span');s.textContent=n;s.onclick=function(){var d=dOf(i);if(Math.abs(d)<.5)openP();else go(cur+Math.round(d))};T.appendChild(s);return s});
+var IL=document.getElementById('il');N.forEach(function(n,i){var li=document.createElement('li'),b=document.createElement('button');b.innerHTML='<sup>0'+(i+1)+'</sup>'+n;b.onclick=function(){document.body.classList.remove('i');document.getElementById('tg').textContent='Index';scrollTo({top:Y(i),behavior:'instant'});cur=pos=tgtP=fromP=i;openP()};li.appendChild(b);IL.appendChild(li)});
+var HV=1.5,PSV=1.6,PV=0,dc=0,tgtP=0,fromP=0,t0f=0,durP=2.5,cur=0,pos=0,isOpen=false,e=0,cr=0,intro=0,started=false,tilt=0,t0b=0,spinAcc=0;
+function tgt(i){return i}
+function Y(c){return (HV+c*PSV)*innerHeight}
+function dOf(i){return i-pos}
+
+// ---------- Navigation ----------
+var lock=false,capEl=document.getElementById('cap');
+function cap(){var c=CAP[m(cur)];capEl.innerHTML='<p>'+c[0]+'</p><span class="mono">0'+(m(cur)+1)+' / 05 · '+NAMES[m(cur)]+'</span><button data-go="'+c[2]+'">'+c[1]+' ↗</button>'}
+function go(n){cur=clamp(Math.round(n),0,4);if(isOpen){render();setShard(m(cur))}else scrollTo({top:Y(cur),behavior:'smooth'})}
+function render(){var pc=document.getElementById('pc');pc.style.opacity=0;setTimeout(function(){pc.innerHTML=P[m(cur)];pc.style.opacity=1;document.getElementById('pn').scrollTop=0;cap()},200)}
+function openP(){if(isOpen)return;cur=Math.round(cur);isOpen=true;setShard(m(cur));document.body.classList.add('o');document.getElementById('tg').textContent='Close';document.getElementById('pc').innerHTML=P[m(cur)];cap();try{location.hash=S[m(cur)]}catch(x){}}
+function closeP(){isOpen=false;document.body.classList.remove('o','i');scrollTo({top:Y(Math.round(cur)),behavior:'instant'});document.getElementById('tg').textContent='Index';try{history.replaceState(null,'',location.pathname+location.search)}catch(x){}}
+document.getElementById('tg').onclick=function(){if(isOpen)closeP();else{document.body.classList.toggle('i');this.textContent=document.body.classList.contains('i')?'Close':'Index'}};
+document.getElementById('brand').onclick=function(){closeP();scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('pv').onclick=function(){go(cur-1)};document.getElementById('nx').onclick=function(){go(cur+1)};
+var drag=null;
+cv.addEventListener('pointerdown',function(ev){if(isOpen||!started||document.body.classList.contains('i'))return;drag={x:ev.clientX,y:ev.clientY,moved:0};dc=cur;try{cv.setPointerCapture(ev.pointerId)}catch(x){}});
+cv.addEventListener('pointerup',function(){if(!drag)return;var tap=drag.moved<8;drag=null;if(tap){if(PV>.9)openP()}else if(PV>.5)scrollTo({top:Y(Math.round(dc)),behavior:'smooth'})});
+cv.addEventListener('pointercancel',function(){drag=null});
+addEventListener('keydown',function(ev){if(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA')return;var k=ev.key;if(k==='ArrowRight')go(cur+1);else if(k==='ArrowLeft')go(cur-1);else if(k==='Enter')openP();else if(k==='Escape')closeP()});
+document.addEventListener('click',function(ev){var g=ev.target.getAttribute&&ev.target.getAttribute('data-go');if(g){go(tgt(+g))}});
+document.addEventListener('submit',function(ev){if(ev.target.id!=='jf2')return;ev.preventDefault();var f=ev.target,ok=document.getElementById('ok'),er=document.getElementById('er');ok.style.display=er.style.display='none';var d={};new FormData(f).forEach(function(v,k){d[k]=String(v).trim()});
+ if(!d.name||!d.sem||!/^\S+@\S+\.\S+$/.test(d.email)||!d.why){er.textContent='Please fill in your name, semester, a valid email and your why.';er.style.display='block';return}
+ try{localStorage.setItem('aws_application',JSON.stringify(d))}catch(x){}
+ ok.textContent='Thanks '+d.name.split(' ')[0]+', your application is in. We’ll be in touch.';ok.style.display='block';f.reset()});
+var px_=0,py_=0,pl=document.getElementById('pl'),pr=document.getElementById('pr'),bot=document.getElementById('bot');
+addEventListener('pointermove',function(ev){px_=ev.clientX/innerWidth*2-1;py_=ev.clientY/innerHeight*2-1;
+ if(drag){var dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;drag.x=ev.clientX;drag.y=ev.clientY;drag.moved+=Math.abs(dx)+Math.abs(dy);if(PV>.5){dc=clamp(dc-dx/(innerWidth*.3),0,4);scrollTo(0,Y(dc));spinAcc+=dx*.012}tilt=clamp(tilt+dy*.006,-.8,.8)}
+ var r=bot.getBoundingClientRect(),ddx=ev.clientX-(r.left+r.width/2),ddy=ev.clientY-(r.top+r.height/2),d=Math.hypot(ddx,ddy)||1,k=Math.min(2.2,d/60),tr='translate('+ddx/d*k+','+ddy/d*k+')';pl.setAttribute('transform',tr);pr.setAttribute('transform',tr)});
+
+// ---------- Loop ----------
+var LDs=[[3.2,'w1'],[3.5,'w2'],[3.8,'w3'],[4.1,'w4'],[4.4,'w5'],[4.8,'fk'],[5.25,'fin']],ldI=0,INTRO_T=6;
+(function(){try{var u=texEarth.image.toDataURL('image/jpeg',.8);document.querySelector('#w4>div').style.backgroundImage='url('+u+')';document.querySelector('#w5 .sp').style.backgroundImage='url('+u+')'}catch(x){}})();
+function ldStage(tm){while(ldI<LDs.length&&tm>=LDs[ldI][0]){var id=LDs[ldI][1];if(id==='fin')document.getElementById('ld').classList.add('fin');else document.getElementById(id).classList.add('on');ldI++}}
+var flEl=document.getElementById('fl'),heroEl=document.getElementById('hero');try{history.scrollRestoration='manual';if(!location.hash)scrollTo(0,0)}catch(x){}
+var t0=performance.now(),last=t0,ldEl=document.getElementById('ld'),lc=document.getElementById('lc'),tintEl=document.getElementById('tint'),hintEl=document.getElementById('hint'),lastCr=-1,lastIdx=-1;
+function loop(now){requestAnimationFrame(loop);try{loopB(now)}catch(x){rpt(x)}}
+function loopB(now){var tm=Math.max(0,(now-t0)/1000),dt=clamp((now-last)/1000,0,.05);last=now;
+ if(!started){ldStage(tm);var p=Math.min(1,tm/INTRO_T);lc.textContent=Math.floor(p*100);if(p>=1){started=true;ldEl.classList.add('h');t0b=now;var ix=S.indexOf(location.hash.slice(1));if(ix>=0){scrollTo(0,Y(ix));cur=pos=tgtP=fromP=ix;setTimeout(openP,900)}}}
+ else intro=Math.min(1,(now-t0b)/1800);
+ var v=innerHeight,y=scrollY,hd=clamp(y/(HV*v),0,1),q=(y/v-HV)/PSV;
+ PV=clamp((hd-.8)/.2,0,1)*(1-clamp((q-4)/.7,0,1));PV=PV*PV*(3-2*PV);
+ if(!isOpen)cur=Math.round(clamp(q,0,4));
+ orb.visible=hd<1;orb.scale.setScalar(1+Math.pow(hd,2.1)*13);orb.rotation.y=tm*.12+hd*3;orb.rotation.x=hd*1.2;orbM.opacity=1-clamp((hd-.9)/.1,0,1);
+ flEl.style.opacity=Math.sin(clamp((hd-.5)/.5,0,1)*Math.PI)*.92;
+ heroEl.style.opacity=1-clamp(hd*1.8,0,1);heroEl.style.transform='scale('+(1+hd*1.8)+')';heroEl.style.visibility=hd<.6?'visible':'hidden';
+ document.documentElement.style.setProperty('--pv',PV);
+ if(cur!==tgtP){fromP=pos;t0f=now;tgtP=cur;var df=Math.abs(cur-fromP);durP=2.5+(df>1.5?(df-1)*.6:0)}
+ var kf=clamp((now-t0f)/(durP*1000),0,1);pos=fromP+(tgtP-fromP)*(kf<.5?4*kf*kf*kf:1-Math.pow(-2*kf+2,3)/2);
+ var pk=clamp(pos||0,0,4)/4,Cc=curve.getPoint(pk),Tt=curve.getTangent(pk),th2=Math.atan2(Tt.x,-Tt.z)*.75,cs2=Math.cos(th2),sn2=Math.sin(th2);
+ cr=isOpen?Math.min(1,cr+.022):(e<.25?Math.max(0,cr-.06):cr);
+ var eT=(isOpen&&cr>=1)?1:0;e+=(eT-e)*.06;if(!isOpen&&e<.02)e=0;
+ if(Math.abs(cr-lastCr)>.004){drawCracks(cr);lastCr=cr}
+ spinAcc+=dt*.14*(1-cr);tilt*=.997;
+ var i0=Math.floor(pos),f=pos-i0,A=((i0%5)+5)%5,B=(A+1)%5,tc=mx(TINT[A],TINT[B],f);
+ tintEl.style.background='radial-gradient(ellipse at 50% 38%,rgba('+(tc[0]|0)+','+(tc[1]|0)+','+(tc[2]|0)+',.26),transparent 62%)';
+ var idx=m(pos);if(idx!==lastIdx){hintEl.textContent=NAMES[idx]+' · scroll to follow the orbit';lastIdx=idx}
+ var ease=1-Math.pow(1-intro,3),ei=.001+ease*.999,yy=-(1-ease)*3,pcs=Math.max(0,1-e*6);
+ stars.rotation.y=tm*.004+th2*.8;stars.rotation.x=tm*.002;
+ cam.position.x+=(px_*.8-cam.position.x)*.05;cam.position.y+=(-py_*.4-cam.position.y)*.05;cam.lookAt(0,0,0);
+ lava.mesh.material.emissiveIntensity=1+.25*Math.sin(tm*2.2);hole.disk.rotation.z+=dt*.55;
+ bodies.forEach(function(b,i){var d=dOf(i),ad=Math.abs(d),isC=ad<.5,k=1-.2*Math.min(ad,1),vis=d<0?clamp(1+d*1.2,0,1):clamp(1.6-d*.35,.35,1);var f2=isC?pcs:(1-Math.min(1,cr*4)),s=base*k*f2*ei*vis*PV;
+  var wx=WP[i].x-Cc.x,wz=WP[i].z-Cc.z;b.g.position.set(wx*cs2+wz*sn2,CY+yy+WP[i].y-Cc.y,-wx*sn2+wz*cs2);b.g.scale.set(s,s,s);b.g.rotation.x=tilt;b.g.visible=s>.002;if(b.mesh)b.mesh.rotation.y=spinAcc});
+ pathG.rotation.y=th2;pathG.position.set(-(Cc.x*cs2+Cc.z*sn2),CY+yy-Cc.y,-(-Cc.x*sn2+Cc.z*cs2));
+ pathM.opacity=.55*PV*ei*(1-Math.min(1,cr*4));plM.opacity=Math.min(1,pathM.opacity*1.5);
+ for(var j=0;j<NPL;j++){var pp=curve.getPoint(((tm*.05+j/NPL)%1+1)%1);plp[j*3]=pp.x;plp[j*3+1]=pp.y;plp[j*3+2]=pp.z}plg.attributes.position.needsUpdate=true;
+ var cb=bodies[m(cur)];crack.position.set(0,CY+yy,0);crack.rotation.x=tilt;var cs=base*cb.K*pcs*ei;crack.scale.set(cs,cs,cs);crack.visible=cs>.002&&cr>0;
+ shG.position.y=yy;
+ shards.forEach(function(o){var sz=o.size*base*Math.min(1,e*4),fl=Math.sin(tm*.8+o.ph)*.12*e;o.m.position.set(o.home.x+o.dir.x*e,o.home.y+o.dir.y*e+fl,o.home.z+o.dir.z*e);o.m.rotation.x=tm*o.r[0]*.7;o.m.rotation.y=tm*o.r[1]*.7;o.m.scale.set(sz,sz,sz);o.m.visible=e>.01});
+ var X=Math.min(innerWidth*.74,680);
+ for(var i=0;i<5;i++){var d=dOf(i),ad=Math.abs(d),el=tEls[i],sk=Math.min(1,ad*1.6);
+  el.style.transform='translateX(calc(-50% + '+(d*X)+'px)) translateZ('+(-ad*150)+'px) rotateY('+(d*40)+'deg)';
+  el.style.color='rgba(255,255,255,'+(1-sk)+')';el.style.webkitTextStrokeColor='rgba(255,255,255,'+(.6*sk)+')';el.style.opacity=ad>2.2?0:1;el.style.zIndex=ad<.5?2:1}
+ R.render(sc,cam)}
+requestAnimationFrame(loop);
+
+var snT;addEventListener('scroll',function(){clearTimeout(snT);if(isOpen||PV<.5)return;snT=setTimeout(function(){if(!isOpen&&!drag&&PV>.5)scrollTo({top:Y(Math.round(clamp((scrollY/innerHeight-HV)/PSV,0,4))),behavior:'smooth'})},180)},{passive:true});
+// ---------- Page sections ----------
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;en.target.classList.add('in');io.unobserve(en.target);
+ en.target.querySelectorAll('[data-n]').forEach(function(b){var n=+b.dataset.n,t0c=performance.now();(function st(now){var k=Math.min(1,(now-t0c)/1400);b.textContent=Math.round(n*(1-Math.pow(1-k,3)))+(k>=1?'+':'');if(k<1)requestAnimationFrame(st)})(t0c)})})},{threshold:.2});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+document.getElementById('apply').onclick=function(){scrollTo({top:Y(1),behavior:'instant'});cur=pos=tgtP=fromP=1;openP()};
+// ---------- Jarvis ----------
+var W=document.getElementById('jw'),M=document.getElementById('jm'),C=document.getElementById('jc'),TP=document.getElementById('tip');
+var KB=[[/\b(hi|hello|hey|yo)\b/,'Beep boop! I’m Jarvis, the AWS helper bot. Ask me about the club, teams, events or joining.'],
+[/join|apply|member|sign/,'Open the Join section and fill in your name, semester, email, a link to something you built, and why you want to join.'],
+[/what is|about|aws|club|who are|build/,'AWS is a student builder club for people who create webpages, websites, apps and software and love sharing the creative side of tech.'],
+[/team|tech|pr\b|design|poster/,'Two teams: Tech is the logic behind what we build; PR provides the aesthetic, posters and design.'],
+[/president|saif/,'Mohammad Saif is the President of the Tech team.'],[/vice|varun/,'C Varun is the Vice President of the Tech team.'],
+[/srikar|lead/,'Srikar is the Tech Lead, and Shashank NM is the PR Lead.'],[/shashank/,'Shashank NM leads the PR team.'],
+[/vertech/,'VertechX is one of our flagship events. Details will land in Events.'],[/intro|workshop/,'The Intro Workshop is the best place to start: tools, setup and a small first project.'],
+[/showcase|project/,'At the Project Showcase, members demo what they built and get feedback.'],[/event/,'Events: Intro Workshop, Project Showcase, VertechX and more on the way.'],
+[/planet|earth|saturn|neptune|black hole|cancri|janssen/,'Each section has its own world: Earth for Home, a black hole for Join, 55 Cancri e (Janssen) for Community, Saturn for Events and Neptune for Contact.'],
+[/beginner|experience|skill|newbie|need/,'No experience needed. Anyone who likes tech is welcome.'],[/contact|email|reach|talk/,'Use the Contact section, or apply through Join and the team will get in touch.'],[/thank|thx/,'Anytime! Happy building.']];
+function add(t,c){var x=document.createElement('div');x.className='m '+c;x.textContent=t;M.appendChild(x);M.scrollTop=M.scrollHeight}
+function ask(q){add(q,'u');var s=q.toLowerCase(),a='Hmm, my circuits don’t know that one. Try asking about joining, teams, events or the people behind AWS.';for(var i=0;i<KB.length;i++){if(KB[i][0].test(s)){a=KB[i][1];break}}setTimeout(function(){add(a,'b')},350)}
+['How do I join?','What do you build?','Events','Who runs it?'].forEach(function(q){var x=document.createElement('button');x.textContent=q;x.onclick=function(){ask(q)};C.appendChild(x)});
+add('Hi, I’m Jarvis. Ask me anything about AWS.','b');
+bot.onclick=function(){W.classList.toggle('open');TP.style.display='none'};
+document.getElementById('jx').onclick=function(){W.classList.remove('open')};
+document.getElementById('jf').addEventListener('submit',function(ev){ev.preventDefault();var i=document.getElementById('ji'),v=i.value.trim();if(v){ask(v);i.value=''}});
+})();
+</script>
+</body>
+</html>
